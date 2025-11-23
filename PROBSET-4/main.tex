@@ -1,0 +1,257 @@
+\documentclass[11pt, a4paper]{article}
+
+% --- FONT SETTINGS ---
+\usepackage[T1]{fontenc}
+\usepackage[scaled]{helvet} 
+\renewcommand{\familydefault}{\sfdefault} 
+
+% --- PACKAGES ---
+\usepackage{graphicx}               
+\usepackage[a4paper, margin=1in]{geometry}   
+\usepackage{tikz}                   
+\usepackage{xcolor}          
+\usepackage{nicematrix} 
+\usepackage{fancyvrb} % Required for safe file writing
+
+% --- TCOLORBOX SETUP ---
+\usepackage{tcolorbox}
+\tcbuselibrary{skins, minted, breakable}
+
+\usepackage{booktabs}               
+\usepackage{subcaption}             
+\usepackage{caption}                
+\usepackage{needspace}              
+\usepackage{float}                  
+\usepackage[skip=10pt]{caption}     
+\usepackage{fancyhdr}               
+\usepackage{datetime}               
+\usepackage{lipsum}                 
+\usepackage{changepage}             
+\usepackage[shortlabels]{enumitem}  
+\usepackage{titletoc}  
+\usetikzlibrary{calc}               
+
+\setlength{\parindent}{0pt}         
+
+% ==========================================
+%      IMPORT PROJECT DETAILS
+% ==========================================
+\input{details}
+% ==========================================
+
+% --- COLOR DEFINITIONS ---
+\definecolor{codebg}{RGB}{250, 245, 230}       
+\definecolor{docgray}{RGB}{30, 30, 30} 
+\definecolor{inlinecodebg}{RGB}{240, 230, 200} 
+\definecolor{framecolor}{rgb}{0.8,0.8,0.8}
+
+% --- INTERACTIVITY ---
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,      
+    linkcolor=docgray,       
+    citecolor=docgray,       
+    filecolor=docgray,       
+    urlcolor=blue,        
+    pdftitle={\docHeaderTitle},  
+    pdfauthor={\authorName}      
+}
+
+% --- DATE FORMAT ---
+\newdateformat{daymonyearformat}{\THEDAY\ \monthname[\THEMONTH] \THEYEAR}
+
+% --- CAPTION SETUP ---
+\DeclareCaptionFormat{mycustomformat}{%
+    \parbox{\linewidth}{
+        \textbf{\MakeUppercase{\figurename}~\thefigure}\par%
+        \vspace{0.5ex}      
+        \small#3%
+    }%
+}
+\DeclareCaptionStyle{mycustom}{
+    format=mycustomformat,
+    font=small,
+    labelfont=bf,
+    justification=raggedright,
+    singlelinecheck=false
+}
+
+% --- INLINE CODE ---
+\newtcbox{\inlinecode}{
+  on line,
+  arc=3pt,
+  colback=inlinecodebg, 
+  colframe=inlinecodebg, 
+  boxrule=0pt,
+  boxsep=0pt,
+  left=3pt, right=3pt, top=2pt, bottom=1pt,
+  fontupper=\ttfamily
+}
+
+% ==========================================
+%        CIA / DOSSIER STYLE BLOCKS
+% ==========================================
+
+% 1. SOURCE CODE BLOCK (ciacode)
+% Usage: \begin{ciacode}{LANGUAGE}{TITLE} ... \end{ciacode}
+\newenvironment{ciacode}[2]{%
+   \def\cialang{#1}%
+   \def\ciatitle{#2}%
+   \VerbatimEnvironment
+   \begin{VerbatimOut}{\jobname.codeblk}% Writes to temp file
+}{%
+   \end{VerbatimOut}%
+   \tcbinputlisting{
+      listing engine=minted,
+      listing only,
+      minted language=\cialang,
+      listing file={\jobname.codeblk}, 
+      minted options={
+          fontsize=\small, 
+          breaklines, 
+          autogobble,
+          linenos,
+          numbersep=3mm
+      },
+      enhanced,
+      skin=enhancedlast,     
+      arc=1pt,
+      boxrule=0.5pt,
+      colframe=docgray,
+      colback=codebg,
+      width=\linewidth,
+      title={\small\ttfamily\textbf{\cialang} // \textbf{\ciatitle}},
+      coltitle=black,
+      attach boxed title to top left={xshift=3mm, yshift=-3mm},
+      boxed title style={
+          colback=codebg,
+          colframe=docgray,
+          arc=1pt,
+          boxrule=0.5pt,
+          bottom=1mm
+      },
+      drop shadow southeast
+   }
+}
+
+% 2. CONSOLE/SYSTEM OUTPUT BLOCK (cblkout)
+% Usage: \begin{cblkout}{TITLE} ... \end{cblkout}
+\newenvironment{cblkout}[1]{%
+   % We use \detokenize to safely handle underscores in the title
+   \def\ciatitle{\detokenize{#1}}% 
+   \VerbatimEnvironment
+   \begin{VerbatimOut}{\jobname.outblk}%
+}{%
+   \end{VerbatimOut}%
+   \tcbinputlisting{
+      listing engine=minted,
+      listing only,
+      minted language=text, 
+      listing file={\jobname.outblk}, 
+      minted options={
+          fontsize=\small, 
+          breaklines, 
+          autogobble,
+          linenos=false,
+      },
+      enhanced,
+      skin=enhancedlast,     
+      arc=1pt,
+      boxrule=0.5pt,
+      colframe=docgray,
+      colback=codebg,
+      width=\linewidth,
+      % Title handling is now safer with \ciatitle defined above
+      title={\small\ttfamily\textbf{SYSTEM} // \textbf{\ciatitle}},
+      coltitle=black,
+      attach boxed title to top left={xshift=3mm, yshift=-3mm},
+      boxed title style={
+          colback=codebg,
+          colframe=docgray,
+          arc=1pt,
+          boxrule=0.5pt,
+          bottom=1mm
+      },
+      drop shadow southeast
+   }
+}
+
+% --- HEADER AND FOOTER ---
+\fancypagestyle{mainpages}{
+    \fancyhf{}                      
+    \fancyhead[L]{\small\textcolor{docgray}{\docID \ | \ \docHeaderTitle}} 
+    \fancyfoot[L]{\small\textcolor{docgray}{\daymonyearformat\today}}   
+    \fancyfoot[R]{\small\thepage}                                    
+    \renewcommand{\headrulewidth}{0pt}
+    \renewcommand{\footrulewidth}{0pt}
+}
+
+% --- TOC/LISTS CUSTOMIZATION ---
+\makeatletter
+\renewcommand\tableofcontents{%
+  \section*{\contentsname}
+  \@starttoc{toc}%
+}
+\renewcommand\listoftables{%
+  \section*{\listtablename}
+  \@starttoc{lot}%
+}
+\renewcommand\listoffigures{%
+  \section*{\listfigurename}
+  \@starttoc{lof}%
+}
+\makeatother
+
+\titlecontents{section}[2.3em]
+  {\addvspace{1em}}                   
+  {\bfseries\contentslabel{2em}}      
+  {\hspace*{-2.3em}\bfseries}         
+  {\titlerule*[0.3pc]{.}\contentspage}
+
+\titlecontents{subsection}[4.6em] 
+  {}
+  {\contentslabel{2.3em}}
+  {\hspace*{-2.3em}}
+  {\titlerule*[0.3pc]{.}\contentspage}
+
+\titlecontents{subsubsection}[6.9em]
+  {}
+  {\itshape\contentslabel{3em}}
+  {\hspace*{-3em}}
+  {\titlerule*[0.3pc]{.}\contentspage}
+
+\titlecontents{figure}[2.5em]
+  {}{\contentslabel{2.5em}}{\hspace*{-2.5em}}{\titlerule*[0.3pc]{.}\contentspage}
+
+\titlecontents{table}[2.5em]
+  {}{\contentslabel{2.5em}}{\hspace*{-2.5em}}{\titlerule*[0.3pc]{.}\contentspage}
+
+\pdfpageattr {/Group << /S /Transparency /I true /CS /DeviceRGB>>}
+
+\begin{document}
+\input{titlepage}   
+\pagenumbering{roman}
+
+\ifShowTOC
+    \tableofcontents
+    \clearpage
+\fi
+
+\ifShowLOT
+    \addcontentsline{toc}{section}{Tables}
+    \listoftables
+    \clearpage
+\fi
+
+\ifShowLOF
+    \addcontentsline{toc}{section}{Figures}
+    \listoffigures
+    \clearpage
+\fi
+
+\pagenumbering{arabic}
+\pagestyle{mainpages} 
+
+\include{content}    
+
+\end{document}

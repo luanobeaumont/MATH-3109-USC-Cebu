@@ -1,0 +1,12 @@
+content.aux
+main.aux
+main.fdb_latexmk
+main.codeblk
+main.fls
+main.lof
+main.log
+main.lot
+main.out
+main.outblk
+main.toc
+_minted/
