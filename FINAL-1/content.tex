@@ -2,143 +2,102 @@
 %              MAIN CONTENT
 % ==========================================
 
-Raw Data based from Kaggle: https://www.kaggle.com/datasets/uciml/pima-indians-diabetes-database/data
+Raw Data based from Kaggle: % https://www.kaggle.com/datasets/uciml/pima-indians-diabetes-database/data
 
-\section{Typography and Formatting}
 
-\subsection{Text Sizes}
-The following demonstrates the standard \LaTeX\ font sizing hierarchy:
-\begin{itemize}
-    \item \tiny{This is tiny text}
-    \item \scriptsize{This is scriptsize text}
-    \item \footnotesize{This is footnotesize text}
-    \item \small{This is small text}
-    \item \normalsize{This is normalsize text (Default)}
-    \item \large{This is large text}
-    \item \Large{This is Large text}
-    \item \LARGE{This is LARGE text}
-    \item \huge{This is huge text}
-    \item \Huge{This is Huge text}
-\end{itemize}
+\section{Introduction}
 
-\subsection{Text Styles}
-Standard formatting options include:
-\begin{itemize}
-    \item \textbf{Bold Text Example}
-    \item \textit{Italicized Text Example}
-    \item \underline{Underlined Text Example}
-    \item \sout{Strikethrough Text Example}
-    \item \textbf{\textit{Combined Bold and Italic}}
-    \item \texttt{Monospaced/Typewriter Font}
-    \item \textsc{Small Caps Text}
-\end{itemize}
+\subsection{Project Objective}
 
-\subsection{Enumeration and Lists}
-Using the \inlinecode{enumitem} package, we can customize list markers.
+\subsection{Literature Review}
 
-% Arabic Numerals
-\paragraph{Arabic Numerals (Default)}
-\begin{enumerate}
-    \item First item (Standard)
-    \item Second item
-    \item Third item
-\end{enumerate}
+\subsection{Raw Data}
 
-% Roman Numerals
-\paragraph{Roman Numerals}
-\begin{enumerate}[I.]
-    \item Major Point One
-    \item Major Point Two
-    \begin{enumerate}[i.]
-        \item Minor point i
-        \item Minor point ii
-    \end{enumerate}
-\end{enumerate}
+\begin{codeblock}{R}{STATISTICAL MODELING}
+library(mice)
+library(corrplot)
+library(ggplot2)
+library(splines)
+library(performance)
+library(see)
+library(ggpubr)
 
-% Letters / Alpha
-\paragraph{Alphabetical Lists}
-\begin{enumerate}[A.]
-    \item Section A
-    \item Section B
-    \begin{enumerate}[a)]
-        \item subsection a
-        \item subsection b
-    \end{enumerate}
-\end{enumerate}
+setwd("~/School/MATH-3109/FINAL-1")
+raw_data <- read.csv("raw_dataset.csv")
+View(raw_data)
+head(raw_data)
+\end{codeblock}
 
-\clearpage
+\begin{codeoutput}{TERMINAL OUTPUT}
+  Pregnancies Glucose BloodPressure SkinThickness Insulin  BMI DiabetesPedigreeFunction Age Outcome
+1           6     148            72            35       0 33.6                    0.627  50       1
+2           1      85            66            29       0 26.6                    0.351  31       0
+3           8     183            64             0       0 23.3                    0.672  32       1
+4           1      89            66            23      94 28.1                    0.167  21       0
+5           0     137            40            35     168 43.1                    2.288  33       1
+6           5     116            74             0       0 25.6                    0.201  30       0
+\end{codeoutput}
 
-\section{Tables}
 
-\subsection{Standard Professional Table (No Stripes)}
-\begin{table}[ht]
-    \centering
-    \caption{A clean academic table using Booktabs.}
-    \label{tab:std_table}
-    \begin{tabular}{llr} 
-        \toprule
-        \textbf{Component} & \textbf{Material} & \textbf{Cost (\$)} \\ 
-        \midrule
-        Chassis            & Aluminum          & 45.00 \\
-        Microcontroller    & Silicon           & 12.50 \\
-        Power Supply       & Li-Ion            & 22.00 \\
-        \bottomrule
-    \end{tabular}
-\end{table}
+\section{Data Cleaning}
 
-\subsection{Zebra Striped Table}
-This table uses the manila background color defined in the main file.
+\subsection{Converting Zeroes Values to NA}
 
-\begin{table}[ht]
-    \centering
-    \caption{Inventory list with alternating row colors.}
-    \label{tab:zebra_table}
-    \begin{NiceTabular}{l c c}
-        \CodeBefore
-            \rowcolors{2}{codebg}{white}
-        \Body
-        \toprule
-        \textbf{Item Name} & \textbf{Stock ID} & \textbf{Quantity} \\ 
-        \midrule
-        Network Switch     & NS-001            & 15 \\
-        Patch Cable (5m)   & PC-005            & 120 \\
-        Server Rack        & SR-990            & 4 \\
-        Cooling Unit       & CU-202            & 8 \\
-        UPS Battery        & UP-110            & 20 \\
-        \bottomrule
-    \end{NiceTabular}
-\end{table}
+\begin{codeblock}{R}{STATISTICAL MODELING}
+colSums(raw_data == 0)
+\end{codeblock}
 
-\subsection{Full Width Table}
-This table automatically expands to fill the text width between margins.
+\begin{codeoutput}{TERMINAL OUTPUT}
+             Pregnancies                  Glucose            BloodPressure            SkinThickness                  Insulin                      BMI DiabetesPedigreeFunction                      Age                  Outcome 
+                      NA                       NA                       NA                       NA                       NA                       NA                        0                        0                      500 
+\end{codeoutput}
 
-\begin{table}[ht]
-    \centering
-    \caption{A full-width table utilizing available margin space.}
-    \label{tab:full_width}
-    % Using tabular* with extracolsep fill to push columns apart
-    \setlength{\tabcolsep}{0pt}
-    \begin{tabular*}{\textwidth}{@{\extracolsep{\fill}} l c r }
-        \toprule
-        \textbf{Project Phase} & \textbf{Status} & \textbf{Completion Date} \\
-        \midrule
-        Phase 1: Planning      & Complete        & Jan 2024 \\
-        Phase 2: Development   & In Progress     & Mar 2024 \\
-        Phase 3: Testing       & Pending         & May 2024 \\
-        Phase 4: Deployment    & Pending         & Jul 2024 \\
-        \bottomrule
-    \end{tabular*}
-\end{table}
+\begin{codeblock}{R}{STATISTICAL MODELING}
+col_w_zeroes <- c("Pregnancies", "Glucose", "BloodPressure", "SkinThickness", "Insulin", "BMI")
+raw_data[col_w_zeroes] <- lapply(raw_data[col_w_zeroes], function(x) ifelse(x == 0, NA, x))
 
-\clearpage
+summary(raw_data)
+\end{codeblock}
 
-\section{Figures and Images}
+\begin{codeoutput}{TERMINAL OUTPUT}
+  Pregnancies        Glucose      BloodPressure    SkinThickness      Insulin            BMI        DiabetesPedigreeFunction      Age           Outcome     
+ Min.   : 1.000   Min.   : 44.0   Min.   : 24.00   Min.   : 7.00   Min.   : 14.00   Min.   :18.20   Min.   :0.0780           Min.   :21.00   Min.   :0.000  
+ 1st Qu.: 2.000   1st Qu.: 99.0   1st Qu.: 64.00   1st Qu.:22.00   1st Qu.: 76.25   1st Qu.:27.50   1st Qu.:0.2437           1st Qu.:24.00   1st Qu.:0.000  
+ Median : 4.000   Median :117.0   Median : 72.00   Median :29.00   Median :125.00   Median :32.30   Median :0.3725           Median :29.00   Median :0.000  
+ Mean   : 4.495   Mean   :121.7   Mean   : 72.41   Mean   :29.15   Mean   :155.55   Mean   :32.46   Mean   :0.4719           Mean   :33.24   Mean   :0.349  
+ 3rd Qu.: 7.000   3rd Qu.:141.0   3rd Qu.: 80.00   3rd Qu.:36.00   3rd Qu.:190.00   3rd Qu.:36.60   3rd Qu.:0.6262           3rd Qu.:41.00   3rd Qu.:1.000  
+ Max.   :17.000   Max.   :199.0   Max.   :122.00   Max.   :99.00   Max.   :846.00   Max.   :67.10   Max.   :2.4200           Max.   :81.00   Max.   :1.000  
+ NA's   :111      NA's   :5       NA's   :35       NA's   :227     NA's   :374      NA's   :11                                                             
+\end{codeoutput}
 
-\subsection{Standard Figure}
+\subsection{MICE Imputation}
+
+\begin{codeblock}{R}{STATISTICAL MODELING}
+init <- mice(raw_data, maxit = 0)
+methods <- init$method #$
+methods[col_w_zeroes] <- "pmm"
+imputed_data <- mice(raw_data, method = methods, m = 5, maxit = 5, seed = 123)
+final_data <- complete(imputed_data, 1)
+head(final_data) 
+\end{codeblock}
+
+View full \hyperref[sec:appendix]{R script output here}.
+
+\begin{codeblock}{R}{STATISTICAL MODELING}
+anyNA(final_data)
+\end{codeblock}
+
+\begin{codeoutput}{TERMINAL OUTPUT}
+anyNA(final_data)
+\end{codeoutput}
+
+\subsection{Imputation Validation}
+
+Refer to \hyperref[sec:appendix]{Appendix Section} for the full R script.
+
 \begin{figure}[H]
     \centering
-    % Using example-image-a as placeholder
-    \includegraphics[width=0.6\textwidth]{example-image-a}
+    \includegraphics[width=0.8\textwidth]{pregnancies_comparison}
     \captionsetup{style=mycustom}
     \caption{A standard centered figure.}
     \label{fig:standard}
@@ -146,120 +105,407 @@ This table automatically expands to fill the text width between margins.
     {\footnotesize\textcolor{docgray}{\textit{Source: Generated by LaTeX}}}
 \end{figure}
 
-\subsection{Side-by-Side Figures}
+
 \begin{figure}[H]
     \centering
-    \begin{subfigure}[b]{0.48\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{example-image-b}
-        \caption{Left Side Data}
-        \label{fig:left}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}[b]{0.48\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{example-image-c}
-        \caption{Right Side Data}
-        \label{fig:right}
-    \end{subfigure}
-    \caption{Comparative analysis showing two figures side-by-side.}
-    \label{fig:sidebyside}
+    \includegraphics[width=0.8\textwidth]{glucose_comparison}
+    \captionsetup{style=mycustom}
+    \caption{A standard centered figure.}
+    \label{fig:standard}
+    \vspace{1mm}
+    {\footnotesize\textcolor{docgray}{\textit{Source: Generated by LaTeX}}}
 \end{figure}
 
-\subsection{Custom Styled Figure}
-% Specific custom style requested
 \begin{figure}[H]
-  \begin{center}
-      \rule{\textwidth}{0.8pt}  % Overbar at top
-  \end{center}
-  \captionsetup{style=mycustom}
-  \caption{Extended detail overview of the figure shown below...}
-  \label{fig:1}
-  \begin{center}
-      % Note: Replace example-image with resources/2_bLine_regressplot.png
-      \includegraphics[width=0.8\textwidth]{example-image}
-  \end{center}
-
-  \vspace{1mm} 
-  {\footnotesize\textcolor{gray}{\textit{Source: --Source of the Graph--}}}
+    \centering
+    \includegraphics[width=0.8\textwidth]{bloodpressure_comparison.png}
+    \captionsetup{style=mycustom}
+    \caption{A standard centered figure.}
+    \label{fig:standard}
+    \vspace{1mm}
+    {\footnotesize\textcolor{docgray}{\textit{Source: Generated by LaTeX}}}
 \end{figure}
 
-\clearpage
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{skinthickness_comparison}
+    \captionsetup{style=mycustom}
+    \caption{A standard centered figure.}
+    \label{fig:standard}
+    \vspace{1mm}
+    {\footnotesize\textcolor{docgray}{\textit{Source: Generated by LaTeX}}}
+\end{figure}
 
-\section{Code Implementation}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{insulin_comparison}
+    \captionsetup{style=mycustom}
+    \caption{A standard centered figure.}
+    \label{fig:standard}
+    \vspace{1mm}
+    {\footnotesize\textcolor{docgray}{\textit{Source: Generated by LaTeX}}}
+\end{figure}
 
-\subsection{Inline Code}
-You can mention variables or commands directly in the paragraph using \inlinecode{inline code styling}, which highlights the text with the Manila theme.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{bmi_comparison}
+    \captionsetup{style=mycustom}
+    \caption{A standard centered figure.}
+    \label{fig:standard}
+    \vspace{1mm}
+    {\footnotesize\textcolor{docgray}{\textit{Source: Generated by LaTeX}}}
+\end{figure}
 
-\subsection{Multi-Language Support}
+\section{Exploratory Analysis}
 
-% 1. C/C++ Example
-\begin{codeblock}{C}{MEMORY ALLOCATION ROUTINE}
-#include <stdio.h>
-#include <stdlib.h>
+\subsection{Correlation Matrix}
 
-int main() {
-    int *ptr;
-    int n = 5;
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{correlation}
+    \captionsetup{style=mycustom}
+    \caption{A standard centered figure.}
+    \label{fig:standard}
+    \vspace{1mm}
+    {\footnotesize\textcolor{docgray}{\textit{Source: Generated by LaTeX}}}
+\end{figure}
 
-    // Dynamically allocate memory
-    ptr = (int*)malloc(n * sizeof(int));
-
-    if (ptr == NULL) {
-        printf("Memory not allocated.\n");
-        exit(0);
-    }
-    
-    printf("Memory successfully allocated using malloc.\n");
-    free(ptr);
-    return 0;
-}
-\end{codeblock}
-
-\vspace{1em}
-
-% 2. Python Example
-\begin{codeblock}{Python}{DATA PROCESSING SCRIPT}
-import pandas as pd
-import numpy as np
-
-def calculate_metrics(data_frame):
-    # Calculate basic statistics
-    mean_val = np.mean(data_frame['value'])
-    max_val = np.max(data_frame['value'])
-    
-    print(f"Processing Complete.")
-    print(f"Mean: {mean_val:.2f} | Max: {max_val}")
-    return mean_val
-
-# Execute
-df = pd.DataFrame({'value': [10, 20, 30, 40, 50]})
-calculate_metrics(df)
-\end{codeblock}
-
-% 3. R Example
 \begin{codeblock}{R}{STATISTICAL MODELING}
-# Load necessary library
-library(ggplot2)
+cor_matrix <- cor(final_data, use = "complete.obs")
+corrplot(cor_matrix, method = "circle", type = "upper", order = "hclust",
+        tl.col = "black", tl.srt = 45, title = "Correlations", mar=c(0,0,1,0))
+\end{codeblock}
 
-# Create sample dataset
-data <- data.frame(
-  x = c(1, 2, 3, 4, 5),
-  y = c(2, 4, 6, 8, 10)
+\subsection{Analyzing Linearity}
+
+
+
+\section{Modelling Logistic Regression}
+
+\subsection{Model Specification}
+
+\begin{codeblock}{R}{STATISTICAL MODELING}
+set.seed(123)
+sample_index <- sample(1:nrow(final_data), 0.8 * nrow(final_data))
+train_data <- final_data[sample_index, ]
+test_data <- final_data[-sample_index, ]
+
+log_model <- glm(Outcome ~ Glucose + BMI + Age + Pregnancies + DiabetesPedigreeFunction,
+                data = train_data, family= "binomial")
+
+summary(log_model)
+\end{codeblock}
+
+\begin{codeoutput}{TERMINAL OUTPUT}
+glm(formula = Outcome ~ Glucose + BMI + Age + Pregnancies + DiabetesPedigreeFunction, 
+    family = "binomial", data = train_data)
+
+Coefficients:
+                          Estimate Std. Error z value Pr(>|z|)    
+(Intercept)              -9.200623   0.809675 -11.363  < 2e-16 ***
+Glucose                   0.037413   0.004099   9.128  < 2e-16 ***
+BMI                       0.079814   0.016719   4.774 1.81e-06 ***
+Age                       0.009594   0.010003   0.959 0.337506    
+Pregnancies               0.130485   0.037653   3.465 0.000529 ***
+DiabetesPedigreeFunction  0.659625   0.321580   2.051 0.040247 *  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+(Dispersion parameter for binomial family taken to be 1)
+
+    Null deviance: 796.42  on 613  degrees of freedom
+Residual deviance: 568.82  on 608  degrees of freedom
+AIC: 580.82
+
+Number of Fisher Scoring iterations: 5
+\end{codeoutput}
+
+\subsection{Odds Ratio Interpretation}
+
+\begin{codeblock}{R}{STATISTICAL MODELING}
+exp(coef(log_model))
+\end{codeblock}
+
+\begin{codeoutput}{TERMINAL OUTPUT}
+ (Intercept)                  Glucose                      BMI                      Age              Pregnancies DiabetesPedigreeFunction 
+0.0001009765             1.0381215630             1.0830855110             1.0096399484             1.1393803946             1.9340669910 
+\end{codeoutput}
+
+\subsection{Model Performance}
+
+\section{Linear Regression (Predict Insulin)}
+
+\begin{codeblock}{R}{STATISTICAL MODELING}
+linear_simple <- lm(Insulin ~ Glucose + BMI + Age, data = final_data)
+summary(linear_simple)
+\end{codeblock}
+
+\begin{codeoutput}{TERMINAL OUTPUT}
+Call:
+lm(formula = Insulin ~ Glucose + BMI + Age, data = final_data)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-289.02  -45.91  -14.70   25.01  567.44 
+
+Coefficients:
+             Estimate Std. Error t value Pr(>|t|)    
+(Intercept) -167.6456    19.1120  -8.772  < 2e-16 ***
+Glucose        1.8543     0.1125  16.481  < 2e-16 ***
+BMI            2.0651     0.4791   4.310 1.84e-05 ***
+Age            0.5693     0.2841   2.004   0.0455 *  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 89.01 on 764 degrees of freedom
+Multiple R-squared:  0.3401,    Adjusted R-squared:  0.3375 
+F-statistic: 131.2 on 3 and 764 DF,  p-value: < 2.2e-16
+\end{codeoutput}
+
+\begin{codeblock}{R}{STATISTICAL MODELING}
+linear_spline <- lm (Insulin ~ Glucose + BMI + bs(Age, degree = 3), data = final_data)
+summary(linear_spline)
+\end{codeblock}
+
+\begin{codeoutput}{TERMINAL OUTPUT}
+Call:
+lm(formula = Insulin ~ Glucose + BMI + bs(Age, degree = 3), data = final_data)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-299.47  -47.78  -14.42   26.00  554.90 
+
+Coefficients:
+                      Estimate Std. Error t value Pr(>|t|)    
+(Intercept)          -151.3071    18.2230  -8.303 4.61e-16 ***
+Glucose                 1.8612     0.1123  16.571  < 2e-16 ***
+BMI                     2.2633     0.4871   4.646 3.98e-06 ***
+bs(Age, degree = 3)1  -57.2504    32.8240  -1.744   0.0815 .  
+bs(Age, degree = 3)2   80.9994    50.5390   1.603   0.1094    
+bs(Age, degree = 3)3    5.4944    62.7432   0.088   0.9302    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 88.82 on 762 degrees of freedom
+Multiple R-squared:  0.3447,    Adjusted R-squared:  0.3404 
+F-statistic: 80.16 on 5 and 762 DF,  p-value: < 2.2e-16
+\end{codeoutput}
+
+\subsection{B-Spline Justification}
+
+Refer to \hyperref[sec:appendix]{Appendix Section} for the full R script.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{linearity}
+    \captionsetup{style=mycustom}
+    \caption{A standard centered figure.}
+    \label{fig:standard}
+    \vspace{1mm}
+    {\footnotesize\textcolor{docgray}{\textit{Source: Generated by LaTeX}}}
+\end{figure}
+
+\subsection{Comparison Linear vs. B-Spline}
+
+\begin{codeblock}{R}{STATISTICAL MODELING}
+linear_simple <- lm(Insulin ~ Glucose + BMI + Age, data = final_data)    
+linear_spline <- lm (Insulin ~ Glucose + BMI + bs(Age, degree = 3), data = final_data)
+anova(linear_simple, linear_spline)
+\end{codeblock}
+
+\begin{codeoutput}{TERMINAL OUTPUT}
+Analysis of Variance Table
+
+Model 1: Insulin ~ Glucose + BMI + Age
+Model 2: Insulin ~ Glucose + BMI + bs(Age, degree = 3)
+  Res.Df     RSS Df Sum of Sq      F  Pr(>F)  
+1    764 6052997                              
+2    762 6010880  2     42116 2.6696 0.06993 .
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+\end{codeoutput}
+
+\subsection{Residual Diagnostics}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{splien_model}
+    \captionsetup{style=mycustom}
+    \caption{A standard centered figure.}
+    \label{fig:standard}
+    \vspace{1mm}
+    {\footnotesize\textcolor{docgray}{\textit{Source: Generated by LaTeX}}}
+\end{figure}
+
+\begin{codeblock}{R}{STATISTICAL MODELING}
+image_rend <- check_model(linear_spline)
+png("splien_model.png", width = 12, height = 9, units = "in", res = 300)
+print(image_rend)
+dev.off()
+\end{codeblock}
+
+\section{Discussions}
+
+\subsection{Validation of Literature Claims}
+
+\subsection{Key Findings}
+
+\subsection{Limitations (if any)}
+
+\section{Appendix}
+\label{sec:appendix}
+
+\begin{codeblock}{R}{HISTOGRAM COMPARISON CODE EXAMPLE}
+p1 <- gghistogram(raw_data, x = "Pregnancies",
+    title = "Original Pregnancies (Raw)",
+    xlab = "Pregnancies", ylab = "Count",
+    fill = "#b2182b",        
+    color = "#b2182b",
+    add = "mean", rug = TRUE, add_density = TRUE,
+    ggtheme = theme_pubr()
 )
 
-# Linear Regression Model
-model <- lm(y ~ x, data = data)
+p2 <- gghistogram(final_data, x = "Pregnancies",
+    title = "Imputed Pregnancies (Complete)",
+    xlab = "Pregnancies", ylab = "Count",
+    fill = "#2166ac",       
+    color = "#2166ac",
+    add = "mean", rug = TRUE, add_density = TRUE,
+    ggtheme = theme_pubr()
+)
 
-# Output summary
-print(summary(model))
+ggarrange(p1, p2, ncol = 2, nrow = 1)
 \end{codeblock}
 
-\subsection{System Output}
-% Code Output Block
-\begin{codeoutput}{TERMINAL OUTPUT}
-user@workstation:~/projects$ gcc main.c -o main
-user@workstation:~/projects$ ./main
-Memory successfully allocated using malloc.
-user@workstation:~/projects$ _
-\end{codeoutput}
+\begin{codeblock}{R}{STATISTICAL MODELING}
+p1 <- gghistogram(raw_data, x = "Glucose",
+    title = "Original Glucose (Raw)",
+    xlab = "Glucose", ylab = "Count",
+    fill = "#b2182b",        
+    color = "#b2182b",
+    add = "mean", rug = TRUE, add_density = TRUE,
+    ggtheme = theme_pubr()
+)
+
+p2 <- gghistogram(final_data, x = "Glucose",
+    title = "Imputed Glucose (Complete)",
+    xlab = "Glucose", ylab = "Count",
+    fill = "#2166ac",       
+    color = "#2166ac",
+    add = "mean", rug = TRUE, add_density = TRUE,
+    ggtheme = theme_pubr()
+)
+
+ggarrange(p1, p2, ncol = 2, nrow = 1)
+\end{codeblock}
+
+\begin{codeblock}{R}{STATISTICAL MODELING}
+p1 <- gghistogram(raw_data, x = "BloodPressure",
+    title = "Original BloodPressure (Raw)",
+    xlab = "BloodPressure", ylab = "Count",
+    fill = "#b2182b",        
+    color = "#b2182b",
+    add = "mean", rug = TRUE, add_density = TRUE,
+    ggtheme = theme_pubr()
+)
+
+p2 <- gghistogram(final_data, x = "BloodPressure",
+    title = "Imputed BloodPressure (Complete)",
+    xlab = "BloodPressure", ylab = "Count",
+    fill = "#2166ac",       
+    color = "#2166ac",
+    add = "mean", rug = TRUE, add_density = TRUE,
+    ggtheme = theme_pubr()
+)
+
+ggarrange(p1, p2, ncol = 2, nrow = 1)
+\end{codeblock}
+
+\begin{codeblock}{R}{STATISTICAL MODELING}
+p1 <- gghistogram(raw_data, x = "SkinThickness",
+    title = "Original SkinThickness (Raw)",
+    xlab = "SkinThickness", ylab = "Count",
+    fill = "#b2182b",        
+    color = "#b2182b",
+    add = "mean", rug = TRUE, add_density = TRUE,
+    ggtheme = theme_pubr()
+)
+
+p2 <- gghistogram(final_data, x = "SkinThickness",
+    title = "Imputed SkinThickness (Complete)",
+    xlab = "SkinThickness", ylab = "Count",
+    fill = "#2166ac",       
+    color = "#2166ac",
+    add = "mean", rug = TRUE, add_density = TRUE,
+    ggtheme = theme_pubr()
+)
+
+ggarrange(p1, p2, ncol = 2, nrow = 1)
+\end{codeblock}
+
+\begin{codeblock}{R}{STATISTICAL MODELING}
+p1 <- gghistogram(raw_data, x = "Insulin",
+    title = "Original Insulin (Raw)",
+    xlab = "Insulin", ylab = "Count",
+    fill = "#b2182b",        
+    color = "#b2182b",
+    add = "mean", rug = TRUE, add_density = TRUE,
+    ggtheme = theme_pubr()
+)
+
+p2 <- gghistogram(final_data, x = "Insulin",
+    title = "Imputed Insulin (Complete)",
+    xlab = "Insulin", ylab = "Count",
+    fill = "#2166ac",       
+    color = "#2166ac",
+    add = "mean", rug = TRUE, add_density = TRUE,
+    ggtheme = theme_pubr()
+)
+
+ggarrange(p1, p2, ncol = 2, nrow = 1)
+\end{codeblock}
+
+\begin{codeblock}{R}{STATISTICAL MODELING}
+p1 <- gghistogram(raw_data, x = "BMI",
+    title = "Original BMI (Raw)",
+    xlab = "BMI", ylab = "Count",
+    fill = "#b2182b",        
+    color = "#b2182b",
+    add = "mean", rug = TRUE, add_density = TRUE,
+    ggtheme = theme_pubr()
+)
+
+p2 <- gghistogram(final_data, x = "BMI",
+    title = "Imputed BMI (Complete)",
+    xlab = "BMI", ylab = "Count",
+    fill = "#2166ac",       
+    color = "#2166ac",
+    add = "mean", rug = TRUE, add_density = TRUE,
+    ggtheme = theme_pubr()
+)
+
+ggarrange(p1, p2, ncol = 2, nrow = 1)
+\end{codeblock}
+
+\begin{codeblock}{R}{STATISTICAL MODELING}
+ggplot(final_data, aes(x = Age, y = Insulin)) +
+  geom_point(color = "#b2182b", alpha = 0.6, size = 2) +
+  geom_smooth(method = "lm", 
+              formula = y ~ bs(x, degree = 3), 
+              color = "#2166ac",   
+              fill = "#2166ac",      
+              alpha = 0.2,           
+              size = 1.5) +          
+
+  labs(title = "B-Spline",
+       subtitle = "Non-Linear Relationship between Age and Insulin",
+       x = "Age (Years)",
+       y = "Insulin Level (mu U/ml)") +
+  
+  theme_minimal() +
+  theme(
+    plot.title = element_text(face = "bold", hjust = 0.5, size = 18),
+    plot.subtitle = element_text(hjust = 0.5, color = "gray30", size = 14),
+    axis.title = element_text(face = "bold", size = 14),
+    axis.text = element_text(size = 12))
+\end{codeblock}
