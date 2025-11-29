@@ -1,0 +1,72 @@
+\begin{titlepage}
+    \thispagestyle{empty} 
+
+    % --- CASE FILE BORDER (Fixed) ---
+    \begin{tikzpicture}[remember picture, overlay]
+        \draw[very thick, black] 
+            ($(current page.north west) + (2cm,-2cm)$)
+            rectangle
+            ($(current page.south east) + (-2cm,2cm)$);
+    \end{tikzpicture}
+
+    % --- CONTENT CONTAINER ---
+    \centering
+    \begin{minipage}[c][0.95\textheight][c]{0.95\textwidth}
+        \centering
+        
+        % --- BLOCK 1: HEADER (Fixed Height: 3cm) ---
+        \vspace{1cm} 
+        \begin{minipage}[t][3cm][t]{\textwidth}
+            \centering
+            {\huge \bfseries \institutionName}\par
+            \vspace{0.5em}
+            {\Large \bfseries \departmentName}\par
+        \end{minipage}
+        
+        % --- BLOCK 2: TITLE (Fixed Height: 8cm) ---
+        \begin{minipage}[c][8cm][c]{\textwidth}
+            \centering
+            % The title variable handles the newlines (\\) automatically
+            {\Huge \bfseries \docTitle \par}
+            \vspace{1em}
+            {\Large \underline{\docSubtitle}\par}
+        \end{minipage}
+        
+        % Pushes everything else to the bottom
+        \vfill 
+        
+        % --- BLOCK 3: CREDENTIALS ---
+        \begin{flushleft}
+            \hspace*{1cm} 
+            \begin{minipage}{0.9\textwidth}
+                {\large \bfseries PREPARED BY:}\par
+                \vspace{0.3em}
+                {\Large \authorName}
+                
+                \vspace{1.5cm} 
+                
+                {\large \bfseries SUBMITTED TO:}\par
+                \vspace{0.3em}
+                {\Large \recipientName}
+            \end{minipage}
+        \end{flushleft}
+
+        % CONSTRAINT 2: Exactly 0.5 inch above the footer code
+        \vspace{0.5in}
+
+        % --- BLOCK 4: FOOTER CODE ---
+        \begin{flushright}
+            % NUDGE RIGHT: \hspace*{-0.2cm} pushes the text slightly closer to the border
+            {\bfseries \docID \hspace*{-0.2cm}}\par
+            \vspace{0.2em}
+            {\large \bfseries 
+                \ifcase\month\or JANUARY\or FEBRUARY\or MARCH\or APRIL\or MAY\or JUNE\or JULY\or AUGUST\or SEPTEMBER\or OCTOBER\or NOVEMBER\or DECEMBER\fi
+                \ \the\year\hspace*{-0.2cm}
+            }
+        \end{flushright}
+        
+        % CONSTRAINT 1: Exactly 0.2 inches above the bottom margin line
+        \vspace*{0.2in} 
+    \end{minipage}
+
+\end{titlepage}
