@@ -373,7 +373,12 @@ Multiple R-squared:  0.3401,    Adjusted R-squared:  0.3375
 F-statistic: 131.2 on 3 and 764 DF,  p-value: < 2.2e-16
 \end{codeoutput}
 
-\paragraph{Statement}
+\vspace{8pt}
+The simple linear model explains 34\% of the variation in insulin 
+levels. Glucose and BMI are the strongest predictors ($p<0.001$). Age 
+is statistically significant but has a weaker effect ($p=0.046$). The 
+model suggests that for every year a person ages, their insulin 
+increases by about 0.57 units.
 
 \begin{codeblock}{R}{R | LINEAR SPLINE MODEL}
 linear_spline <- lm (Insulin ~ Glucose + BMI + bs(Age, degree = 3), 
@@ -405,7 +410,12 @@ Multiple R-squared:  0.3447,    Adjusted R-squared:  0.3404
 F-statistic: 80.16 on 5 and 762 DF,  p-value: < 2.2e-16
 \end{codeoutput}
 
-\paragraph{Statement}
+\vspace{8pt}
+The B-spline model improves the fit slightly. The R-squared value 
+rises to 34.5\%. Glucose and BMI remain the strongest drivers of 
+insulin levels. The spline coefficients capture the complex relationship 
+between age and insulin. The shifting signs in these coefficients confirm 
+the non-linear "rise and fall" pattern seen in our earlier graphs.
 
 \subsection{B-Spline Justification}
 
@@ -451,7 +461,12 @@ Model 2: Insulin ~ Glucose + BMI + bs(Age, degree = 3)
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 \end{codeoutput}
 
-\paragraph{Statement}
+\vspace{8pt}
+We compared the two models using an ANOVA test. The p-value is 0.07. 
+This result is marginally significant. It is strictly above the standard 
+0.05 threshold. However, visual evidence shows a clear curve in the data. 
+Therefore, we accept the spline model because it better reflects biological 
+reality.
 
 \subsection{Residual Diagnostics}
 
@@ -477,7 +492,12 @@ print(image_rend)
 dev.off()
 \end{codeblock}
 
-\paragraph{Statement}
+\vspace{8pt}
+The diagnostic plots validate the model assumptions. The residuals are 
+randomly distributed around zero. This confirms linearity. The Q-Q plot 
+shows the errors follow a normal distribution. Observation 460 is an 
+outlier but does not distort the model. The variance remains consistent 
+across the data range.
 
 \section{Discussions}
 
@@ -530,9 +550,7 @@ p2 <- gghistogram(final_data, x = "Pregnancies",
 )
 
 ggarrange(p1, p2, ncol = 2, nrow = 1)
-\end{codeblock}
 
-\begin{codeblock}{R}{STATISTICAL MODELING}
 p1 <- gghistogram(raw_data, x = "Glucose",
     title = "Original Glucose (Raw)",
     xlab = "Glucose", ylab = "Count",
@@ -552,9 +570,7 @@ p2 <- gghistogram(final_data, x = "Glucose",
 )
 
 ggarrange(p1, p2, ncol = 2, nrow = 1)
-\end{codeblock}
 
-\begin{codeblock}{R}{STATISTICAL MODELING}
 p1 <- gghistogram(raw_data, x = "BloodPressure",
     title = "Original BloodPressure (Raw)",
     xlab = "BloodPressure", ylab = "Count",
@@ -563,7 +579,9 @@ p1 <- gghistogram(raw_data, x = "BloodPressure",
     add = "mean", rug = TRUE, add_density = TRUE,
     ggtheme = theme_pubr()
 )
+\end{codeblock}
 
+\begin{codeblock}{R}{HISTOGRAM COMPARISON CODE EXAMPLE}
 p2 <- gghistogram(final_data, x = "BloodPressure",
     title = "Imputed BloodPressure (Complete)",
     xlab = "BloodPressure", ylab = "Count",
@@ -574,9 +592,7 @@ p2 <- gghistogram(final_data, x = "BloodPressure",
 )
 
 ggarrange(p1, p2, ncol = 2, nrow = 1)
-\end{codeblock}
 
-\begin{codeblock}{R}{STATISTICAL MODELING}
 p1 <- gghistogram(raw_data, x = "SkinThickness",
     title = "Original SkinThickness (Raw)",
     xlab = "SkinThickness", ylab = "Count",
@@ -596,9 +612,7 @@ p2 <- gghistogram(final_data, x = "SkinThickness",
 )
 
 ggarrange(p1, p2, ncol = 2, nrow = 1)
-\end{codeblock}
 
-\begin{codeblock}{R}{STATISTICAL MODELING}
 p1 <- gghistogram(raw_data, x = "Insulin",
     title = "Original Insulin (Raw)",
     xlab = "Insulin", ylab = "Count",
@@ -618,9 +632,7 @@ p2 <- gghistogram(final_data, x = "Insulin",
 )
 
 ggarrange(p1, p2, ncol = 2, nrow = 1)
-\end{codeblock}
 
-\begin{codeblock}{R}{STATISTICAL MODELING}
 p1 <- gghistogram(raw_data, x = "BMI",
     title = "Original BMI (Raw)",
     xlab = "BMI", ylab = "Count",
@@ -629,7 +641,9 @@ p1 <- gghistogram(raw_data, x = "BMI",
     add = "mean", rug = TRUE, add_density = TRUE,
     ggtheme = theme_pubr()
 )
+\end{codeblock}
 
+\begin{codeblock}{R}{HISTOGRAM COMPARISON CODE EXAMPLE}
 p2 <- gghistogram(final_data, x = "BMI",
     title = "Imputed BMI (Complete)",
     xlab = "BMI", ylab = "Count",

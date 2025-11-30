@@ -80,14 +80,7 @@ dev.off()
 png("bloodpressure_comparison.png", width = 12, height = 9, units = "in", res = 300)
 p1 <- gghistogram(raw_data, x = "BloodPressure",
     title = "Original BloodPressure (Raw)",
-    xlab = "BloodPressurlinear_simple <- lm(Insulin ~ Glucose + BMI + Age, data = final_data)
-summary(linear_simple)
-
-linear_spline <- lm (Insulin ~ Glucose + BMI + bs(Age, degree = 3), data = final_data)
-summary(linear_spline)
-
-## Compare
-anova(linear_simple, linear_spline)e", ylab = "Count",
+    xlab = "BloodPressure", ylab = "Count",
     fill = "#b2182b",        
     color = "#b2182b",
     add = "mean", rug = TRUE, add_density = TRUE,
@@ -218,7 +211,7 @@ log_model <- glm(Outcome ~ Glucose + BMI + Age + Pregnancies + DiabetesPedigreeF
 summary(log_model)
 
 ## By a unit of increase in var, odds of diabetes increase by X
-as.matrix(exp(coef(log_model)))
+exp(coef(log_model))
 
 
 ## Linear regression
