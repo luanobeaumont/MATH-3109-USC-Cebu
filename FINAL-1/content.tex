@@ -2,9 +2,6 @@
 %              MAIN CONTENT
 % ==========================================
 
-Raw Data based from Kaggle: % https://www.kaggle.com/datasets/uciml/pima-indians-diabetes-database/data
-
-
 \section{Introduction}
 
 Diabetes is a significant public health concern that demands accurate methods 
@@ -24,13 +21,15 @@ data.
 
 \subsection{Literature Review}
 
-Nassiwa and Zeng identify Glucose and BMI as the primary predictors of diabetes. 
+Nassiwa and Zeng \cite{nassiwa2024} identify Glucose and BMI as the primary predictors of diabetes. 
 This study seeks to replicate those findings using the Pima Indians dataset. We 
 hypothesize that metabolic markers will outrank demographic factors like age in 
 predictive power.
 
 \subsection{Raw Data}
+Dataset obtained from \href{https://www.kaggle.com/datasets/uciml/pima-indians-diabetes-database/data}{Kaggle: Pima Indian Diabetes Dataset}
 
+\vspace{8pt}
 The dataset consists of 768 observations from the Pima Indians Diabetes Database. 
 It includes medical predictor variables and one target variable, Outcome. Initial 
 inspection reveals missing values encoded as zeros, which requires correction 
@@ -507,7 +506,7 @@ and the project objectives.
 
 \subsection{Validation of Literature Claims}
 
-Our results confirm the claims of Nassiwa and Zeng. \inlinecode{Glucose} and \inlinecode{BMI} were the 
+Our results confirm the claims of Nassiwa and Zeng \cite{nassiwa2024}. \inlinecode{Glucose} and \inlinecode{BMI} were the 
 strongest predictors in our logistic model ($\mathbf{p<2e-16}$). This proves that 
 immediate metabolic markers are more predictive than general demographics like age.
 
@@ -525,10 +524,20 @@ s relatively small, with only \textbf{768} observations. Despite robust imputati
 original missingness in Insulin was high. Future studies would benefit from a 
 larger, more complete dataset to improve precision.
 
-\section{Appendix}
+\begin{thebibliography}{9}
+
+\bibitem{nassiwa2024}
+F. Nassiwa and J. Zeng, 
+``Evaluating Traditional Machine Learning Models for Predicting Diabetes Onset Using the Pima Indians Dataset,'' 
+\textit{Annals of Medical and Health Science Research}, 
+vol. 14, no. 7, pp. 1010--1015, 2024.
+
+\end{thebibliography}
+
+\section{Appendices}
 \label{sec:appendix}
 
-\subsection*{Appendix Imputation Comparison}
+\subsection{Appendix Imputation Comparison}
 \label{sec:appendixa} 
 \begin{codeblock}{R}{HISTOGRAM COMPARISON CODE EXAMPLE}
 p1 <- gghistogram(raw_data, x = "Pregnancies",
