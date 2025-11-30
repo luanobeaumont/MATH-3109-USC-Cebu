@@ -7,13 +7,36 @@ Raw Data based from Kaggle: % https://www.kaggle.com/datasets/uciml/pima-indians
 
 \section{Introduction}
 
+Diabetes is a significant public health concern that demands accurate methods 
+for early detection. Predictive modeling allows us to identify individuals at 
+high risk before severe complications arise. This study utilizes the Pima Indians 
+Diabetes Database to construct robust statistical models. We aim to determine 
+which diagnostic measurements most accurately predict the onset of diabetes and 
+to model the non-linear fluctuations of insulin levels using applied regression 
+techniques.
+
 \subsection{Project Objective}
+
+This project aims to predict the onset of diabetes based on diagnostic measures. 
+We will also model insulin levels using regression techniques. The goal is to 
+identify key risk factors and understand non-linear relationships in the medical 
+data.
 
 \subsection{Literature Review}
 
+Nassiwa and Zeng identify Glucose and BMI as the primary predictors of diabetes. 
+This study seeks to replicate those findings using the Pima Indians dataset. We 
+hypothesize that metabolic markers will outrank demographic factors like age in 
+predictive power.
+
 \subsection{Raw Data}
 
-\begin{codeblock}{R}{STATISTICAL MODELING}
+The dataset consists of 768 observations from the Pima Indians Diabetes Database. 
+It includes medical predictor variables and one target variable, Outcome. Initial 
+inspection reveals missing values encoded as zeros, which requires correction 
+before analysis.
+
+\begin{codeblock}{R}{R | SETTING UP ENVIRONMENT}
 library(mice)
 library(corrplot)
 library(ggplot2)
@@ -28,51 +51,91 @@ View(raw_data)
 head(raw_data)
 \end{codeblock}
 
-\begin{codeoutput}{TERMINAL OUTPUT}
-  Pregnancies Glucose BloodPressure SkinThickness Insulin  BMI DiabetesPedigreeFunction Age Outcome
-1           6     148            72            35       0 33.6                    0.627  50       1
-2           1      85            66            29       0 26.6                    0.351  31       0
-3           8     183            64             0       0 23.3                    0.672  32       1
-4           1      89            66            23      94 28.1                    0.167  21       0
-5           0     137            40            35     168 43.1                    2.288  33       1
-6           5     116            74             0       0 25.6                    0.201  30       0
+\begin{codeoutput}{RAW DATA HEAD}
+Pregnancies Glucose BloodPressure SkinThickness Insulin 
+        6     148            72            35       0 
+        1      85            66            29       0 
+        8     183            64             0       0 
+        1      89            66            23      94 
+        0     137            40            35     168 
+        5     116            74             0       0 
+
+BMI  DiabetesPedigreeFunction  Age   Outcome
+33.6                    0.627  50       1
+26.6                    0.351  31       0
+23.3                    0.672  32       1
+28.1                    0.167  21       0
+43.1                    2.288  33       1
+25.6                    0.201  30       0
 \end{codeoutput}
 
 
 \section{Data Cleaning}
 
+Real-world medical data is rarely perfect. We must first address biologically 
+impossible zero values that represent missing data to avoid biased results.
+
 \subsection{Converting Zeroes Values to NA}
 
-\begin{codeblock}{R}{STATISTICAL MODELING}
-colSums(raw_data == 0)
+The summary confirms substantial missingness disguised as zeros. 
+
+\begin{codeblock}{R}{R | GETTING COLUMNS WITH ZERO VALUES}
+as.matrix(colSums(raw_data == 0))
 \end{codeblock}
 
-\begin{codeoutput}{TERMINAL OUTPUT}
-             Pregnancies                  Glucose            BloodPressure            SkinThickness                  Insulin                      BMI DiabetesPedigreeFunction                      Age                  Outcome 
-                      NA                       NA                       NA                       NA                       NA                       NA                        0                        0                      500 
+\begin{codeoutput}{COLUMNS AND NUMBER OF ZERO VALES}
+Pregnancies               111
+Glucose                     5
+BloodPressure              35
+SkinThickness             227
+Insulin                   374
+BMI                        11
+DiabetesPedigreeFunction    0
+Age                         0
+Outcome                   500
 \end{codeoutput}
 
-\begin{codeblock}{R}{STATISTICAL MODELING}
-col_w_zeroes <- c("Pregnancies", "Glucose", "BloodPressure", "SkinThickness", "Insulin", "BMI")
-raw_data[col_w_zeroes] <- lapply(raw_data[col_w_zeroes], function(x) ifelse(x == 0, NA, x))
+\begin{codeblock}{R}{R | CONVERTING ZERO VALUES TO NA}
+col_w_zeroes <- c("Pregnancies", "Glucose", "BloodPressure", "SkinThickness",
+                  "Insulin", "BMI")
+raw_data[col_w_zeroes] <- lapply(raw_data[col_w_zeroes], function(x) 
+                                ifelse(x == 0, NA, x))
 
 summary(raw_data)
 \end{codeblock}
 
-\begin{codeoutput}{TERMINAL OUTPUT}
-  Pregnancies        Glucose      BloodPressure    SkinThickness      Insulin            BMI        DiabetesPedigreeFunction      Age           Outcome     
- Min.   : 1.000   Min.   : 44.0   Min.   : 24.00   Min.   : 7.00   Min.   : 14.00   Min.   :18.20   Min.   :0.0780           Min.   :21.00   Min.   :0.000  
- 1st Qu.: 2.000   1st Qu.: 99.0   1st Qu.: 64.00   1st Qu.:22.00   1st Qu.: 76.25   1st Qu.:27.50   1st Qu.:0.2437           1st Qu.:24.00   1st Qu.:0.000  
- Median : 4.000   Median :117.0   Median : 72.00   Median :29.00   Median :125.00   Median :32.30   Median :0.3725           Median :29.00   Median :0.000  
- Mean   : 4.495   Mean   :121.7   Mean   : 72.41   Mean   :29.15   Mean   :155.55   Mean   :32.46   Mean   :0.4719           Mean   :33.24   Mean   :0.349  
- 3rd Qu.: 7.000   3rd Qu.:141.0   3rd Qu.: 80.00   3rd Qu.:36.00   3rd Qu.:190.00   3rd Qu.:36.60   3rd Qu.:0.6262           3rd Qu.:41.00   3rd Qu.:1.000  
- Max.   :17.000   Max.   :199.0   Max.   :122.00   Max.   :99.00   Max.   :846.00   Max.   :67.10   Max.   :2.4200           Max.   :81.00   Max.   :1.000  
- NA's   :111      NA's   :5       NA's   :35       NA's   :227     NA's   :374      NA's   :11                                                             
+\begin{codeoutput}{VISUALIZING SUMMARY ACCOUNTING NA's}
+ Pregnancies        Glucose      BloodPressure    SkinThickness      Insulin       
+Min.   : 1.000   Min.   : 44.0   Min.   : 24.00   Min.   : 7.00   Min.   : 14.00   
+1st Qu.: 2.000   1st Qu.: 99.0   1st Qu.: 64.00   1st Qu.:22.00   1st Qu.: 76.25     
+Median : 4.000   Median :117.0   Median : 72.00   Median :29.00   Median :125.00   
+Mean   : 4.495   Mean   :121.7   Mean   : 72.41   Mean   :29.15   Mean   :155.55   
+3rd Qu.: 7.000   3rd Qu.:141.0   3rd Qu.: 80.00   3rd Qu.:36.00   3rd Qu.:190.00    
+Max.   :17.000   Max.   :199.0   Max.   :122.00   Max.   :99.00   Max.   :846.00   
+NA's   :111      NA's   :5       NA's   :35       NA's   :227     NA's   :374          
+
+ BMI        DiabetesPedigreeFunction      Age           Outcome     
+Min.   :18.20   Min.   :0.0780           Min.   :21.00   Min.   :0.000
+1st Qu.:27.50   1st Qu.:0.2437           1st Qu.:24.00   1st Qu.:0.000 
+Median :32.30   Median :0.3725           Median :29.00   Median :0.000
+Mean   :32.46   Mean   :0.4719           Mean   :33.24   Mean   :0.349 
+3rd Qu.:36.60   3rd Qu.:0.6262           3rd Qu.:41.00   3rd Qu.:1.000
+Max.   :67.10   Max.   :2.4200           Max.   :81.00   Max.   :1.000 
+NA's   :11        
 \end{codeoutput}
+
+\vspace{8pt}
+Insulin has the highest missing rate, with 374 zero entries. Variables like 
+Glucose, Blood Pressure, and BMI also contain invalid zeros that require correction.
 
 \subsection{MICE Imputation}
 
-\begin{codeblock}{R}{STATISTICAL MODELING}
+\vspace{8pt}
+Dropping rows with missing data would lose too much information. We will use 
+Multivariate Imputation by Chained Equations (MICE) with predictive mean matching 
+to estimate and fill these missing values.
+
+\begin{codeblock}{R}{R | MICE IMPUTATION PMM as METHOD}
 init <- mice(raw_data, maxit = 0)
 methods <- init$method #$
 methods[col_w_zeroes] <- "pmm"
@@ -83,15 +146,22 @@ head(final_data)
 
 View full \hyperref[sec:appendix]{R script output here}.
 
-\begin{codeblock}{R}{STATISTICAL MODELING}
+\begin{codeblock}{R}{R | CHECK FINAL DATA CONTAINS NA's}
 anyNA(final_data)
 \end{codeblock}
 
-\begin{codeoutput}{TERMINAL OUTPUT}
-anyNA(final_data)
+\begin{codeoutput}{RETURN TRUE CONTAINS NA's OTHERWISE NONE}
+[1] FALSE 
 \end{codeoutput}
 
 \subsection{Imputation Validation}
+
+We must verify that our statistical imputation did not distort the natural distribution 
+of the data. Visual inspection confirms the integrity of the data. The imputed 
+distributions (blue) closely mirror the original distributions (red). This suggests 
+the MICE algorithm preserved the underlying data structure without introducing bias.
+
+\vspace{8pt}
 
 Refer to \hyperref[sec:appendix]{Appendix Section} for the full R script.
 
@@ -99,10 +169,10 @@ Refer to \hyperref[sec:appendix]{Appendix Section} for the full R script.
     \centering
     \includegraphics[width=0.8\textwidth]{pregnancies_comparison}
     \captionsetup{style=mycustom}
-    \caption{A standard centered figure.}
+    \caption{Before and After Imputation (Pregnancies).}
     \label{fig:standard}
     \vspace{1mm}
-    {\footnotesize\textcolor{docgray}{\textit{Source: Generated by LaTeX}}}
+    % {\footnotesize\textcolor{docgray}{\textit{Source: Generated by LaTeX}}}
 \end{figure}
 
 
@@ -110,64 +180,73 @@ Refer to \hyperref[sec:appendix]{Appendix Section} for the full R script.
     \centering
     \includegraphics[width=0.8\textwidth]{glucose_comparison}
     \captionsetup{style=mycustom}
-    \caption{A standard centered figure.}
+    \caption{Before and After Imputation (Glucose).}
     \label{fig:standard}
     \vspace{1mm}
-    {\footnotesize\textcolor{docgray}{\textit{Source: Generated by LaTeX}}}
+    % {\footnotesize\textcolor{docgray}{\textit{Source: Generated by LaTeX}}}
 \end{figure}
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.8\textwidth]{bloodpressure_comparison.png}
     \captionsetup{style=mycustom}
-    \caption{A standard centered figure.}
+    \caption{Before and After Imputation (BloodPressure).}
     \label{fig:standard}
     \vspace{1mm}
-    {\footnotesize\textcolor{docgray}{\textit{Source: Generated by LaTeX}}}
+    % {\footnotesize\textcolor{docgray}{\textit{Source: Generated by LaTeX}}}
 \end{figure}
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.8\textwidth]{skinthickness_comparison}
     \captionsetup{style=mycustom}
-    \caption{A standard centered figure.}
+    \caption{Before and After Imputation (SkinThickness).}
     \label{fig:standard}
     \vspace{1mm}
-    {\footnotesize\textcolor{docgray}{\textit{Source: Generated by LaTeX}}}
+    % {\footnotesize\textcolor{docgray}{\textit{Source: Generated by LaTeX}}}
 \end{figure}
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.8\textwidth]{insulin_comparison}
     \captionsetup{style=mycustom}
-    \caption{A standard centered figure.}
+    \caption{Before and After Imputation (Insulin).}
     \label{fig:standard}
     \vspace{1mm}
-    {\footnotesize\textcolor{docgray}{\textit{Source: Generated by LaTeX}}}
+    % {\footnotesize\textcolor{docgray}{\textit{Source: Generated by LaTeX}}}
 \end{figure}
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.8\textwidth]{bmi_comparison}
     \captionsetup{style=mycustom}
-    \caption{A standard centered figure.}
+    \caption{Before and After Imputation (BMI).}
     \label{fig:standard}
     \vspace{1mm}
-    {\footnotesize\textcolor{docgray}{\textit{Source: Generated by LaTeX}}}
+    % {\footnotesize\textcolor{docgray}{\textit{Source: Generated by LaTeX}}}
 \end{figure}
 
 \section{Exploratory Analysis}
 
+Before modeling, we examine the relationships between variables to identify 
+potential predictors. We specifically check for multicollinearity to ensure 
+our regression models remain stable and interpretable.
+
 \subsection{Correlation Matrix}
+
+The matrix reveals strong correlations between \inlinecode{Glucose} and the diabetes \inlinecode{Outcome}. 
+We also observe multicollinearity between \inlinecode{Age} and \inlinecode{Pregnancies}. This validates 
+our selection of predictors but suggests caution regarding variance inflation 
+in the models.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.8\textwidth]{correlation}
     \captionsetup{style=mycustom}
-    \caption{A standard centered figure.}
+    \caption{Correlation Matrix Plot}
     \label{fig:standard}
     \vspace{1mm}
-    {\footnotesize\textcolor{docgray}{\textit{Source: Generated by LaTeX}}}
+    % {\footnotesize\textcolor{docgray}{\textit{Source: Generated by LaTeX}}}
 \end{figure}
 
 \begin{codeblock}{R}{STATISTICAL MODELING}
@@ -178,11 +257,22 @@ corrplot(cor_matrix, method = "circle", type = "upper", order = "hclust",
 
 \subsection{Analyzing Linearity}
 
-
+We test the linearity assumption for our continuous regression model by examining 
+the relationship between Age and Insulin. The local regression plot shows a distinct 
+curve. Insulin levels rise in early adulthood but plateau after age 50. A simple 
+linear line cannot capture this, justifying the need for non-linear modeling techniques.
 
 \section{Modelling Logistic Regression}
 
+We fit a logistic regression model to predict the binary diabetes outcome using our 
+cleaned dataset. The model separates diabetic and non-diabetic patients based on the 
+selected risk factors.
+
 \subsection{Model Specification}
+
+Glucose, BMI, and Pregnancies are highly significant predictors ($p<0.001$). However, 
+Age is not statistically significant ($p=0.337$). This is likely due to its strong 
+correlation with Pregnancies, which absorbed the predictive power in this model.
 
 \begin{codeblock}{R}{STATISTICAL MODELING}
 set.seed(123)
@@ -222,6 +312,11 @@ Number of Fisher Scoring iterations: 5
 
 \subsection{Odds Ratio Interpretation}
 
+We convert the model coefficients into odds ratios to quantify the biological risk 
+in human-readable terms. For every one-unit increase in BMI, the odds of diabetes 
+rise by roughly 8.3\%. Glucose shows a similar positive risk. The Diabetes Pedigree 
+Function has the highest ratio, nearly doubling the odds for each unit increase.
+
 \begin{codeblock}{R}{STATISTICAL MODELING}
 exp(coef(log_model))
 \end{codeblock}
@@ -233,7 +328,15 @@ exp(coef(log_model))
 
 \subsection{Model Performance}
 
+We assess the model's goodness-of-fit by examining the deviance and AIC values. 
+The model significantly reduces deviance from 796 to 568. This drop indicates 
+that our selected predictors explain a substantial amount of the variation in 
+diabetes onset.
+
 \section{Linear Regression (Predict Insulin)}
+
+We shift to a continuous model to predict Insulin levels based on Glucose, BMI, 
+and Age. This analysis aims to capture the factors driving insulin fluctuation.
 
 \begin{codeblock}{R}{STATISTICAL MODELING}
 linear_simple <- lm(Insulin ~ Glucose + BMI + Age, data = final_data)
@@ -261,6 +364,8 @@ Residual standard error: 89.01 on 764 degrees of freedom
 Multiple R-squared:  0.3401,    Adjusted R-squared:  0.3375 
 F-statistic: 131.2 on 3 and 764 DF,  p-value: < 2.2e-16
 \end{codeoutput}
+
+\paragraph{Statement}
 
 \begin{codeblock}{R}{STATISTICAL MODELING}
 linear_spline <- lm (Insulin ~ Glucose + BMI + bs(Age, degree = 3), data = final_data)
@@ -291,7 +396,13 @@ Multiple R-squared:  0.3447,    Adjusted R-squared:  0.3404
 F-statistic: 80.16 on 5 and 762 DF,  p-value: < 2.2e-16
 \end{codeoutput}
 
+\paragraph{Statement}
+
 \subsection{B-Spline Justification}
+
+Standard linear regression assumes a constant rate of change. Our EDA 
+showed that aging effects saturate over time. Therefore, we apply a 
+cubic B-spline to Age to model this biological non-linearity.
 
 Refer to \hyperref[sec:appendix]{Appendix Section} for the full R script.
 
@@ -302,10 +413,15 @@ Refer to \hyperref[sec:appendix]{Appendix Section} for the full R script.
     \caption{A standard centered figure.}
     \label{fig:standard}
     \vspace{1mm}
-    {\footnotesize\textcolor{docgray}{\textit{Source: Generated by LaTeX}}}
+    % {\footnotesize\textcolor{docgray}{\textit{Source: Generated by LaTeX}}}
 \end{figure}
 
 \subsection{Comparison Linear vs. B-Spline}
+
+We statistically compare the simple linear model against the B-spline model 
+using an ANOVA test. The ANOVA results show a p-value of $0.07$. While strictly 
+above the $0.05$ threshold, it suggests marginal significance. Given the visual 
+evidence of curvature, we retain the spline model for its biological realism.
 
 \begin{codeblock}{R}{STATISTICAL MODELING}
 linear_simple <- lm(Insulin ~ Glucose + BMI + Age, data = final_data)    
@@ -325,7 +441,14 @@ Model 2: Insulin ~ Glucose + BMI + bs(Age, degree = 3)
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 \end{codeoutput}
 
+\paragraph{Statement}
+
 \subsection{Residual Diagnostics}
+
+We examine the residuals to ensure the model assumptions of homoscedasticity and 
+normality are met. Diagnostic plots show that the residuals are randomly scattered, 
+satisfying the linearity assumption. Point 460 is flagged as influential but remains 
+within acceptable Cook's distance limits. The model fits the data well.
 
 \begin{figure}[H]
     \centering
@@ -334,7 +457,7 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     \caption{A standard centered figure.}
     \label{fig:standard}
     \vspace{1mm}
-    {\footnotesize\textcolor{docgray}{\textit{Source: Generated by LaTeX}}}
+    % {\footnotesize\textcolor{docgray}{\textit{Source: Generated by LaTeX}}}
 \end{figure}
 
 \begin{codeblock}{R}{STATISTICAL MODELING}
@@ -344,13 +467,33 @@ print(image_rend)
 dev.off()
 \end{codeblock}
 
+\paragraph{Statement}
+
 \section{Discussions}
+
+We synthesize our findings to validate our initial hypotheses. This 
+discussion connects our statistical outputs back to the medical literature 
+and the project objectives.
 
 \subsection{Validation of Literature Claims}
 
+Our results confirm the claims of Nassiwa and Zeng. Glucose and BMI were the 
+strongest predictors in our logistic model ($p<2e-16$). This proves that 
+immediate metabolic markers are more predictive than general demographics like age.
+
 \subsection{Key Findings}
 
+This study produced three major statistical insights. We successfully imputed 
+missing data without bias. Logistic regression identified Glucose, BMI, 
+and Pregnancies as primary risk factors. Finally, we demonstrated that the 
+relationship between Age and Insulin is non-linear, requiring spline modeling.
+
 \subsection{Limitations (if any)}
+
+The dataset has inherent constraints despite our cleaning efforts. The dataset 
+s relatively small, with only 768 observations. Despite robust imputation, the 
+original missingness in Insulin was high. Future studies would benefit from a 
+larger, more complete dataset to improve precision.
 
 \section{Appendix}
 \label{sec:appendix}

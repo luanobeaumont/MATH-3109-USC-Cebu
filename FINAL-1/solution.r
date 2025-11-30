@@ -14,7 +14,7 @@ head(raw_data)
 summary(raw_data)
 
 # Counting zeroes to confirm missingness
-colSums(raw_data == 0)
+as.matrix(colSums(raw_data == 0))
 
 # Converting Zeroes to NA
 col_w_zeroes <- c("Pregnancies", "Glucose", "BloodPressure", "SkinThickness", "Insulin", "BMI")
