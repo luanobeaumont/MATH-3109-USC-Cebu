@@ -218,7 +218,7 @@ log_model <- glm(Outcome ~ Glucose + BMI + Age + Pregnancies + DiabetesPedigreeF
 summary(log_model)
 
 ## By a unit of increase in var, odds of diabetes increase by X
-exp(coef(log_model))
+as.matrix(exp(coef(log_model)))
 
 
 ## Linear regression
