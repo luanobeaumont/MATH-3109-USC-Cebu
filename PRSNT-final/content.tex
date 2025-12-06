@@ -1,0 +1,77 @@
+% ============================================================
+% 1. SECTION PAGE: THEORETICAL FRAMEWORK (Solid Line Style)
+% ============================================================
+\section{Theoretical Framework}
+{
+
+}
+
+% ============================================================
+% 2. FIGURE TEMPLATE: STANDARD
+% ============================================================
+\begin{frame}{Standard Figure Presentation}
+    \begin{figure}
+        \centering
+        % Replace 'example-image-a' with your file
+        \includegraphics[width=0.7\textwidth]{example-image-a}
+        \caption{Visual representation of the polynomial convergence.}
+    \end{figure}
+\end{frame}
+
+% ============================================================
+% 3. FIGURE TEMPLATE: SIDE-BY-SIDE
+% ============================================================
+\begin{frame}{Comparative Analysis}
+    \begin{columns}[T]
+        % Left Column
+        \begin{column}{0.48\textwidth}
+            \begin{figure}
+                \centering
+                \includegraphics[width=\textwidth]{example-image-b}
+                \caption{Method A Results}
+            \end{figure}
+            \small
+            \begin{itemize}
+                \item Faster convergence
+                \item Higher error margin
+            \end{itemize}
+        \end{column}
+        
+        % Right Column
+        \begin{column}{0.48\textwidth}
+            \begin{figure}
+                \centering
+                \includegraphics[width=\textwidth]{example-image-c}
+                \caption{Method B Results}
+            \end{figure}
+            \small
+            \begin{itemize}
+                \item Slower computation
+                \item \alert{Higher precision}
+            \end{itemize}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% ============================================================
+% 4. TABLE TEMPLATE
+% ============================================================
+\begin{frame}{Performance Metrics}
+    \begin{table}
+        \centering
+        \caption{Comparison of Approximation Methods}
+        \begin{tabular}{l c c c}
+            \toprule
+            \textbf{Method} & \textbf{Iterations} & \textbf{Time (ms)} & \textbf{Error Rate} \\
+            \midrule
+            Standard Polynomial & 150 & 45 & $1.2 \times 10^{-3}$ \\
+            Number Field Ring & 120 & 38 & $5.4 \times 10^{-5}$ \\
+            Hybrid Extension & 110 & 42 & $1.1 \times 10^{-6}$ \\
+            \bottomrule
+        \end{tabular}
+    \end{table}
+
+    \vspace{0.5cm}
+    
+    \textbf{Analysis:} The table demonstrates that the \textit{Hybrid Extension} provides the lowest error rate while maintaining competitive computational time.
+\end{frame}

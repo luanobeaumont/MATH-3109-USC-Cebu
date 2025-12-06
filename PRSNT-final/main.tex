@@ -1,0 +1,99 @@
+\documentclass[aspectratio=169]{beamer}
+
+% 1. Theme Setup
+\usetheme{metropolis}
+
+% 2. Required Packages
+\usepackage{tikz}
+\usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage{caption}
+
+% 3. Color Definitions
+\definecolor{MasarykBlue}{HTML}{00456B} 
+
+% --- COLOR OVERRIDES ---
+\setbeamercolor{palette primary}{bg=MasarykBlue}
+\setbeamercolor{alerted text}{fg=MasarykBlue}
+\setbeamercolor{structure}{fg=MasarykBlue}
+\setbeamercolor{progress bar}{fg=MasarykBlue, bg=MasarykBlue!20}
+
+% --- BLOCK STYLING ---
+\setbeamercolor{block title}{bg=MasarykBlue, fg=white}
+\setbeamercolor{block body}{bg=MasarykBlue!10, fg=black}
+
+% 4. Font Setup
+\usefonttheme{professionalfonts} 
+
+% --- METADATA ---
+\title{MULTI-METHOD EXTENSION TO POLYNOMIAL APPROXIMATION USING NUMBER FIELD RING OF INTEGERS}
+\author{Fajardo, Woodrow A.}
+\institute{Department of Computer, Information Sciences, and Mathematics}
+\date{November 27, 2025}
+
+\begin{document}
+
+% --- CUSTOM TITLE PAGE RENDER ---
+{
+    \setbeamercolor{background canvas}{bg=MasarykBlue} 
+    \begin{frame}[plain] 
+        \begin{tikzpicture}[remember picture, overlay]
+            
+            % ================= HEADER (Top Left) =================
+            % Anchored at 1.0cm from the left
+            \node[anchor=north west, xshift=1.0cm, yshift=-1.0cm] (header) at (current page.north west) {
+                \begin{tikzpicture}
+                    % 1. Logo placeholder
+                    \node[anchor=west, inner sep=0pt] (logo) at (0,0) {
+                        \includegraphics[height=1.5cm]{USC_university_seal.png} 
+                    };
+                    
+                    % 2. Vertical White Line
+                    \draw[white, thick] ([xshift=0.3cm]logo.north east) -- ([xshift=0.3cm]logo.south east);
+                    
+                    % 3. Header Text
+                    \node[anchor=west, align=left] at ([xshift=0.5cm]logo.east) {
+                        \sffamily 
+                        \tiny \textcolor{white}{Department of Computer, Information} \\[-0.15cm] 
+                        \tiny \textcolor{white}{Sciences, and Mathematics} \\[-0.05cm]
+                        \scriptsize \rmfamily \textcolor{white}{University of San Carlos}
+                    };
+                \end{tikzpicture}
+            };
+
+            % ================= MAIN TITLE (Middle) =================
+            % Kept at 1.2cm (Minimal indentation)
+            \node[anchor=west, xshift=1.2cm, yshift=-0.3cm] at (current page.west) {
+                \begin{minipage}{0.85\paperwidth}
+                    \raggedright
+                    \color{white}
+                    \usebeamerfont{title} 
+                    \textbf{\Large \inserttitle} 
+                \end{minipage}
+            };
+
+            % ================= SEPARATOR LINE (Dotted) =================
+            % Starts at 1.2cm to align with Title
+            \draw[white, line width=1pt, dash pattern=on 1pt off 3pt] 
+            (1.2cm, -1.5cm) -- (\paperwidth-1cm, -1.5cm);
+
+            % ================= BOTTOM CREDENTIALS =================
+            % Increased indentation to 1.8cm (shifted right relative to Title)
+            \node[anchor=north west, xshift=1.8cm, yshift=-2.0cm] at (current page.west) {
+                \begin{minipage}{0.8\paperwidth}
+                    \raggedright
+                    \color{white}
+                    \textbf{\large Thesis Proposal Defense} \par 
+                    \vspace{0.2cm}
+                    \small \insertauthor
+                \end{minipage}
+            };
+
+        \end{tikzpicture}
+    \end{frame}
+}
+
+% --- IMPORT CONTENT ---
+\input{content.tex}
+
+\end{document}
